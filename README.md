@@ -1,5 +1,20 @@
 # Wasm Doom
 
+> **This fork** builds the engine behind the `doom` command in the terminal on
+> [whatadewitt.com](https://www.whatadewitt.com). Changes from
+> [cloudflare/doom-wasm](https://github.com/cloudflare/doom-wasm):
+>
+> - `configure.ac`: flags updated for Emscripten 6 (`EXPORTED_RUNTIME_METHODS`
+>   with `callMain`, `INITIAL_MEMORY`, no debug-only `SAFE_HEAP` or source maps,
+>   `INVOKE_RUN=0`) and `-std=gnu11`, since newer clang defaults to C23, where
+>   Doom's own `true`/`false` are keywords.
+> - `build/`: the compiled `websockets-doom.js` and `.wasm` plus `default.cfg`,
+>   committed so the site can load them from jsDelivr, e.g.
+>   `https://cdn.jsdelivr.net/gh/whatadewitt/doom-wasm@1.0.0/build/websockets-doom.js`.
+>
+> No game data is included; bring your own `doom1.wad`. Like the original,
+> this is GPL-2.0 (see COPYING).
+
 This is a [Chocolate Doom][1] WebAssembly port with WebSockets [support][4].
 
 ## Requirements

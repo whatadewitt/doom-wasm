@@ -26,7 +26,7 @@ OPT_LEVEL=3
 if test "$GCC" = "yes"
 then
         WARNINGS="-Wall -Wdeclaration-after-statement -Wredundant-decls"
-        CFLAGS="-O$OPT_LEVEL -g $WARNINGS $orig_CFLAGS"
+        CFLAGS="-O$OPT_LEVEL $WARNINGS $orig_CFLAGS"
 fi
 
 # PKG_CHECK_MODULES(SDL, [sdl2 >= 2.0.7])
@@ -115,9 +115,11 @@ AS_IF([test "x$with_libpng" != xno], [
 
 # TODO: We currently link everything against libraries that don't need it.
 # Use the specific library CFLAGS/LIBS variables instead of setting them here.
-EMFLAGS="-gsource-map -s INVOKE_RUN=1 -s USE_SDL=2 -s USE_SDL_MIXER=2 -s LEGACY_GL_EMULATION=0 -s USE_SDL_NET=2 -s ASSERTIONS=0 -s WASM=1 -s ALLOW_MEMORY_GROWTH=0 -s FORCE_FILESYSTEM=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=[['FS','ccall']] -s SAFE_HEAP=1 -s EXIT_RUNTIME=1 -s STACK_OVERFLOW_CHECK=1 -s PROXY_POSIX_SOCKETS=0 -s USE_PTHREADS=0 -s PROXY_TO_PTHREAD=0 -s TOTAL_MEMORY=64MB -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ASYNCIFY -O3 --source-map-base /"
+EMFLAGS="-s INVOKE_RUN=0 -s USE_SDL=2 -s USE_SDL_MIXER=2 -s USE_SDL_NET=2 -s ASSERTIONS=0 -s ALLOW_MEMORY_GROWTH=0 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[['FS','callMain']] -s EXIT_RUNTIME=1 -s INITIAL_MEMORY=64MB -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ASYNCIFY -O3"
 
-CFLAGS="$CFLAGS $SDL_CFLAGS ${SAMPLERATE_CFLAGS:-} ${PNG_CFLAGS:-} $EMFLAGS"
+# Doom defines its own true/false; newer clang defaults to C23, where they're
+# keywords.
+CFLAGS="$CFLAGS $SDL_CFLAGS ${SAMPLERATE_CFLAGS:-} ${PNG_CFLAGS:-} $EMFLAGS -std=gnu11"
 LDFLAGS="$LDFLAGS $SDL_LIBS ${SAMPLERATE_LIBS:-} ${PNG_LIBS:-} $EMFLAGS -lwebsocket.js"
 
 AC_CHECK_LIB(m, log)
