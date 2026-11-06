@@ -100,19 +100,23 @@
 
 #include <inttypes.h>
 
-#if defined(__cplusplus) || defined(__bool_true_false_are_defined)
+// Int-sized in every file. This used to be C99 bool if <stdbool.h> had
+// already been included and an int-sized enum otherwise, but Emscripten's
+// own headers pull it in: files including <emscripten.h> first got a 1-byte
+// boolean and the rest a 4-byte one, so shared structs and arrays
+// (playeringame[], player_t) disagreed on their layout. In-game that meant
+// phantom players and scrambled input. Not bool: Doom keeps -1 sentinels in
+// some booleans (sprite rotations), which bool would turn into true.
 
-// Use builtin bool type with C++.
+#ifdef __cplusplus
 
 typedef bool boolean;
 
 #else
 
-typedef enum 
-{
-    false, 
-    true
-} boolean;
+#include <stdbool.h>
+
+typedef int boolean;
 
 #endif
 
